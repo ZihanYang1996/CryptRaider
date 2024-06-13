@@ -29,9 +29,8 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
-	FRotator MyRotation = GetComponentRotation();
-	FString MyRotationString = MyRotation.ToCompactString();
-	UE_LOG(LogTemp, Warning, TEXT("Rotation is: %s"), *MyRotationString);
+	FVector Start = GetComponentLocation();
+	FVector End = Start + GetForwardVector() * MaxGrabDistance;
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false);
 }
 
