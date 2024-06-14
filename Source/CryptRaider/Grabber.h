@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InputActionValue.h"
 #include "Components/SceneComponent.h"
 #include "Grabber.generated.h"
 
@@ -23,6 +24,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	// Ray-cast and grab what's in reach
+	void Grab(const FInputActionValue& Value);
 
 private:
 	UPROPERTY(EditAnywhere)

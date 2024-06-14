@@ -10,6 +10,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
+#include "CryptRaider/Grabber.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -42,6 +43,11 @@ void ACryptRaiderCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
+	Grabber = FindComponentByClass<UGrabber>();
+	if (Grabber)
+	{
+		UE_LOG(LogTemplateCharacter, Warning, TEXT("Grabber component found!"));
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -60,6 +66,10 @@ void ACryptRaiderCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACryptRaiderCharacter::Look);
+
+		// Grabbing
+		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Started, this, &ACryptRaiderCharacter::Grab);
+		EnhancedInputComponent->BindAction(GrabAction, ETriggerEvent::Completed, this, &ACryptRaiderCharacter::Grab);
 	}
 	else
 	{
@@ -92,4 +102,9 @@ void ACryptRaiderCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
+}
+
+void ACryptRaiderCharacter::Grab(const FInputActionValue& Value)
+{
+	Grabber->Grab(Value);
 }

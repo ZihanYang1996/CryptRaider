@@ -29,28 +29,66 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FVector Start = GetComponentLocation();
-	FVector End = Start + GetForwardVector() * MaxGrabDistance;
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false);
+	// Below are moved to the Grab function
+	
+	// FVector Start = GetComponentLocation();
+	// FVector End = Start + GetForwardVector() * MaxGrabDistance;
+	// DrawDebugLine(GetWorld(), Start, End, FColor::Red, false);
 
-	FHitResult HitResult;
-	FCollisionShape CollisionShape = FCollisionShape::MakeSphere(GrabRadius);
-	bool bHasHit = GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel2, CollisionShape);
+	// FHitResult HitResult;
+	// FCollisionShape CollisionShape = FCollisionShape::MakeSphere(GrabRadius);
+	// bool bHasHit = GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel2, CollisionShape);
 
-	if (bHasHit)
+	// if (bHasHit)
+	// {
+	// 	// Get the actor that was hit
+	// 	AActor* HitActor = HitResult.GetActor();
+	// 	// Calculate distance to the hit
+	// 	// float Distance = HitResult.Distance;
+	// 	// UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *HitActor->GetActorNameOrLabel());
+	// 	// UE_LOG(LogTemp, Warning, TEXT("Distance: %f"), Distance);
+	// }
+	// else
+	// {
+	// 	// UE_LOG(LogTemp, Warning, TEXT("No hit"));
+	// }
+	
+}
+
+void UGrabber::Grab(const FInputActionValue& Value)
+{
+	// input is a bool
+	bool bIsGrabbing = Value.Get<bool>();
+
+	// Check if the GEngine is available first, print an error message and return if it's not
+	if (!GEngine)
 	{
-		// Get the actor that was hit
-		AActor* HitActor = HitResult.GetActor();
-		// Calculate distance to the hit
-		// float Distance = HitResult.Distance;
-		UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *HitActor->GetActorNameOrLabel());
-		// UE_LOG(LogTemp, Warning, TEXT("Distance: %f"), Distance);
+		UE_LOG(LogTemp, Error, TEXT("No GEngine"));
+		return;
+	}
+
+	if (bIsGrabbing)
+	{		
+		FVector Start = GetComponentLocation();
+		FVector End = Start + GetForwardVector() * MaxGrabDistance;
 		
+		FHitResult HitResult;
+		FCollisionShape CollisionShape = FCollisionShape::MakeSphere(GrabRadius);
 		
+		bool bHasHit = GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel2, CollisionShape);
+
+		if (bHasHit)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Grabbed"));
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Grabbing failed"));
+		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No hit"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Released"));
 	}
 	
 }
