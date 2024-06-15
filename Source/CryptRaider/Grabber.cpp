@@ -2,6 +2,8 @@
 
 
 #include "Grabber.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
+
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -19,7 +21,12 @@ void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	// Set up the PhysicsHandle component
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (!PhysicsHandle)
+	{
+		UE_LOG(LogTemp, Type::Error, TEXT("PhysicsHandle component not found!"));
+	}
 	
 }
 
@@ -29,6 +36,14 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// Move the grabbed component to the hold location
+	if (PhysicsHandle->GetGrabbedComponent())
+	{
+		FVector HoldLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
+		PhysicsHandle->SetTargetLocationAndRotation(HoldLocation, GetComponentRotation());
+	}
+
+	
 	// Below are moved to the Grab function
 	
 	// FVector Start = GetComponentLocation();
@@ -71,6 +86,9 @@ void UGrabber::Grab(const FInputActionValue& Value)
 	{		
 		FVector Start = GetComponentLocation();
 		FVector End = Start + GetForwardVector() * MaxGrabDistance;
+
+		// Draw a debug sphere at the end of the sweep (line trace)
+		// DrawDebugSphere(GetWorld(), End, 10, 10, FColor::Blue, false, 5.0f);
 		
 		FHitResult HitResult;
 		FCollisionShape CollisionShape = FCollisionShape::MakeSphere(GrabRadius);
@@ -80,6 +98,16 @@ void UGrabber::Grab(const FInputActionValue& Value)
 		if (bHasHit)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Grabbed"));
+			// HitRsult.Location is the center of the sphere when the sweep hits, so will use ImpactPoint instead
+			// DrawDebugSphere(GetWorld(), HitResult.Location, 10, 10, FColor::Green, false, 5.0f);
+			
+			// HitResult.ImpactPoint is the exact point where the sweep hits
+			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 10, FColor::Red, false, 5.0f);
+
+			// Grab the component at the impact point
+			// First wake up the hit component
+			HitResult.GetComponent()->WakeRigidBody();
+			PhysicsHandle->GrabComponentAtLocationWithRotation(HitResult.GetComponent(), NAME_None, HitResult.ImpactPoint, GetComponentRotation());
 		}
 		else
 		{
@@ -88,7 +116,14 @@ void UGrabber::Grab(const FInputActionValue& Value)
 	}
 	else
 	{
+		// Check if an object is grabbed
+		if (!PhysicsHandle->GetGrabbedComponent())
+		{
+			return;
+		}
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Released"));
+		// Release the grabbed component
+		PhysicsHandle->ReleaseComponent();
 	}
 	
 }

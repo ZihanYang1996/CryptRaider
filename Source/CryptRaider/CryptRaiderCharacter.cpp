@@ -11,7 +11,6 @@
 #include "InputActionValue.h"
 #include "Engine/LocalPlayer.h"
 #include "CryptRaider/Grabber.h"
-#include "PhysicsEngine/PhysicsHandleComponent.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -50,13 +49,6 @@ void ACryptRaiderCharacter::BeginPlay()
 	if (!Grabber)
 	{
 		UE_LOG(LogTemplateCharacter, Type::Error, TEXT("Grabber component not found!"));
-	}
-
-	// Set up the PhysicsHandle component
-	PhysicsHandle = FindComponentByClass<UPhysicsHandleComponent>();
-	if (!PhysicsHandle)
-	{
-		UE_LOG(LogTemplateCharacter, Type::Error, TEXT("PhysicsHandle component not found!"));
 	}
 }
 

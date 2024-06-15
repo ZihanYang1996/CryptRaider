@@ -20,6 +20,9 @@ public:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	
+	/** The Physics Handle component */
+	class UPhysicsHandleComponent* PhysicsHandle; // Forward declaration of the Physics Handle component
 
 public:	
 	// Called every frame
@@ -34,5 +37,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float GrabRadius = 10.0f;
-		
+
+	UPROPERTY(EditAnywhere)
+	float HoldDistance = 100.0f;
 };

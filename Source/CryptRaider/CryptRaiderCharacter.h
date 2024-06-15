@@ -65,12 +65,7 @@ protected:
 
 	/** The Grabber component */
 	class UGrabber* Grabber;  // Forward declaration of the Grabber component
-
-	/** The Physics Handle component */
-	class UPhysicsHandleComponent* PhysicsHandle; // Forward declaration of the Physics Handle component
 	
-
-protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
