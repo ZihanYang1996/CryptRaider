@@ -62,7 +62,13 @@ protected:
 
 	/** Called for grabbing input */
 	void Grab(const FInputActionValue& Value);
-	class UGrabber* Grabber;  // Forward declaration
+
+	/** The Grabber component */
+	class UGrabber* Grabber;  // Forward declaration of the Grabber component
+
+	/** The Physics Handle component */
+	class UPhysicsHandleComponent* PhysicsHandle; // Forward declaration of the Physics Handle component
+	
 
 protected:
 	// APawn interface
