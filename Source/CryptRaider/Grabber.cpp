@@ -70,6 +70,19 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	
 }
 
+bool UGrabber::GetGrabbableInReach(FHitResult& HitResult) const
+{
+	FVector Start = GetComponentLocation();
+	FVector End = Start + GetForwardVector() * MaxGrabDistance;
+
+	// Draw a debug sphere at the end of the sweep (line trace)
+	// DrawDebugSphere(GetWorld(), End, 10, 10, FColor::Blue, false, 5.0f);
+
+	FCollisionShape CollisionShape = FCollisionShape::MakeSphere(GrabRadius);
+		
+	return GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel2, CollisionShape);
+}
+
 void UGrabber::Grab(const FInputActionValue& Value)
 {
 	// input is a bool
@@ -83,17 +96,9 @@ void UGrabber::Grab(const FInputActionValue& Value)
 	}
 
 	if (bIsGrabbing)
-	{		
-		FVector Start = GetComponentLocation();
-		FVector End = Start + GetForwardVector() * MaxGrabDistance;
-
-		// Draw a debug sphere at the end of the sweep (line trace)
-		// DrawDebugSphere(GetWorld(), End, 10, 10, FColor::Blue, false, 5.0f);
-		
+	{
 		FHitResult HitResult;
-		FCollisionShape CollisionShape = FCollisionShape::MakeSphere(GrabRadius);
-		
-		bool bHasHit = GetWorld()->SweepSingleByChannel(HitResult, Start, End, FQuat::Identity, ECollisionChannel::ECC_GameTraceChannel2, CollisionShape);
+		bool bHasHit = GetGrabbableInReach(HitResult);
 
 		if (bHasHit)
 		{

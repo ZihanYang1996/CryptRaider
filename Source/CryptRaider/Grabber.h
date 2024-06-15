@@ -27,6 +27,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	
+	bool GetGrabbableInReach(FHitResult& HitResult) const;
 
 	// Ray-cast and grab what's in reach
 	void Grab(const FInputActionValue& Value);
