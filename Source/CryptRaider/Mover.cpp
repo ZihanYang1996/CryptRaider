@@ -28,10 +28,10 @@ void UMover::BeginPlay()
 	// UE_LOG(LogTemp, Warning, TEXT("MoveTime: %f"), MoveTime);
 
 	// A delay to trigger movement
-	FTimerHandle InvokeHandle; // Timer handle
+	// FTimerHandle InvokeHandle; // Timer handle
 	// Two ways to call TriggerMovement
 	// GetWorld()->GetTimerManager().SetTimer(InvokeHandle, this, &UMover::TriggerMovement, 5, false);
-	GetWorld()->GetTimerManager().SetTimer(InvokeHandle, this, &UMover::TriggerMovement, 1, false, 5);
+	// GetWorld()->GetTimerManager().SetTimer(InvokeHandle, this, &UMover::TriggerMovement, 1, false, 5);
 }
 
 
