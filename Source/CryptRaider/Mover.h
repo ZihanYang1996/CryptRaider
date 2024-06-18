@@ -46,7 +46,7 @@ private:
 	UPROPERTY(EditAnywhere, Category="MovingSettings", meta=(Tooltip="The speed when using VInterpTo."))
 	float MoveSpeed = 5.0f;
 	
-	bool bIsMoving = false;
+	bool bIsTriggered = false;
 	float ConstantMoveSpeed;
 	FTimerHandle MoveTimerHandle;
 	FVector StartLocation;

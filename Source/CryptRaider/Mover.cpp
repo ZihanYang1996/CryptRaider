@@ -9,7 +9,7 @@ UMover::UMover()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-	bIsMoving = false;
+	bIsTriggered = false;
 }
 
 
@@ -45,11 +45,16 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 
 void UMover::TriggerMovement()
 {
+	if (bIsTriggered)
+	{
+		return;
+	}
+	
 	UE_LOG(LogTemp, Warning, TEXT("Triggering movement!"));
 	// The target location
 	FVector TargetLocation = GetOwner()->GetActorLocation() + MoveOffset;
 	// Set the flag to indicate that the actor is moving
-	bIsMoving = true;
+	bIsTriggered = true;
 
 	// Lambda function to call MoveStep that uses VInterpConstantTo or VInterpTo
 	auto MoveStepLambda = [this, TargetLocation]()
@@ -110,7 +115,7 @@ void UMover::MoveStep(const FVector& TargetLocation)
 		double EndTime = FPlatformTime::Seconds();
 		UE_LOG(LogTemp, Warning, TEXT("Time taken: %f"), EndTime - StartTime);
 
-		bIsMoving = false;
+		// bIsTriggered = false;
 		GetWorld()->GetTimerManager().ClearTimer(MoveTimerHandle);
 		UE_LOG(LogTemp, Warning, TEXT("Movement complete"));
 	}
@@ -130,7 +135,7 @@ void UMover::MoveStep(const FVector& TargetLocation, TSharedPtr<float> DeltaTime
 		// Temp
 		double EndTime = FPlatformTime::Seconds();
 		UE_LOG(LogTemp, Warning, TEXT("Time taken: %f"), EndTime - StartTime);
-		bIsMoving = false;
+		bIsTriggered = false;
 		GetWorld()->GetTimerManager().ClearTimer(MoveTimerHandle);
 		UE_LOG(LogTemp, Warning, TEXT("Movement complete"));
 	}
