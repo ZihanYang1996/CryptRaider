@@ -28,9 +28,16 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	// Get access to the Trigger component
+	UPROPERTY(EditAnywhere)
+	AActor* ActorWithTrigger;
+	
+
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UFUNCTION()  // Needed for binding to the OnTrigger delegate, important!
 	void TriggerMovement();
 	
 private:

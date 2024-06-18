@@ -2,6 +2,7 @@
 
 
 #include "Mover.h"
+#include "CryptRaider/Trigger.h"
 
 // Sets default values for this component's properties
 UMover::UMover()
@@ -22,6 +23,17 @@ void UMover::BeginPlay()
 	ConstantMoveSpeed = MoveOffset.Size() / MoveTime;
 	// Get the start location
 	StartLocation = GetOwner()->GetActorLocation();
+
+	UTrigger* Trigger = ActorWithTrigger->FindComponentByClass<UTrigger>();
+	// Bind the TriggerMovement function to the OnTrigger delegate
+	if (Trigger)
+	{
+		Trigger->OnTrigger.AddDynamic(this, &UMover::TriggerMovement);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Trigger component not found!"));
+	}
 
 	// UE_LOG(LogTemp, Warning, TEXT("MoveSpeed: %f"), ConstantMoveSpeed);
 	// UE_LOG(LogTemp, Warning, TEXT("MoveOffset.Size(): %f"), MoveOffset.Size());

@@ -6,9 +6,8 @@
 #include "Components/BoxComponent.h"
 #include "Trigger.generated.h"
 
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTrigger);
+
 UCLASS()
 class CRYPTRAIDER_API UTrigger : public UBoxComponent
 {
@@ -16,6 +15,8 @@ class CRYPTRAIDER_API UTrigger : public UBoxComponent
 
 public:
 	UTrigger();
+	
+	FOnTrigger OnTrigger;
 
 private:
 	UPROPERTY(EditAnywhere, Category="Actor to move")
